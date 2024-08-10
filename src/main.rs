@@ -15,10 +15,6 @@ fn main() {
     // window and display for drawing frames 
     let (window, display) = backend::glutin::SimpleWindowBuilder::new().build(&event_loop);
 
-    // drawing things
-    let mut frame = display.draw();
-    frame.clear_color(0.0, 0.0, 1.0, 1.0);
-
     // triangle
     let v1 = Vertex { position: [-0.5, -0.5] };
     let v2 = Vertex { position: [ 0.0,  0.5] };
@@ -39,7 +35,7 @@ fn main() {
 
     void main() {
         vec2 pos = position;
-        pos.x += x;
+        pos.x += x*pos.y;
         gl_Position = vec4(pos, 0.0, 1.0);
     }
     "#;
@@ -56,10 +52,7 @@ fn main() {
 
     let program = glium::Program::from_source(&display, vertex_shader_src, fragment_shader_src, None).unwrap();
 
-    // finish frame
-    frame.draw(&vertex_buffer, &index_buffer, &program, &glium::uniforms::EmptyUniforms,
-        &Default::default()).unwrap();
-    frame.finish().unwrap();
+    let mut t: f32 = 0.0;
 
     // start loop
     let _ = event_loop.run(move |event, window_target| {
@@ -71,6 +64,17 @@ fn main() {
                 },
                 event::WindowEvent::RedrawRequested => {
                     // calls when we want to draw each frame
+                    t += 0.001;
+                    let x_off = t.sin() * 0.5;
+
+                    // set up frame
+                    let mut frame = display.draw();
+                    frame.clear_color(0.0, 1.0, 1.0, 1.0);
+
+                    // draw
+                    frame.draw(&vertex_buffer, &index_buffer, &program, &uniform! { x: x_off },
+                               &Default::default()).unwrap();
+                    frame.finish().unwrap();
                 },
                 _ => (),
             },
