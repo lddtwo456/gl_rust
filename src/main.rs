@@ -25,33 +25,13 @@ fn main() {
     let vertex_buffer = glium::VertexBuffer::new(&display, &shape).unwrap();
     let index_buffer = glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList);
 
-    // shaders
-    let vertex_shader_src = r#"
-    #version 140
+    // load shaders
+    let vertex_shader_src = std::fs::read_to_string("src/shaders/vertex_shader.glsl").expect("failed to read vertex shader");
+    let fragment_shader_src = std::fs::read_to_string("src/shaders/fragment_shader.glsl").expect("failed to read fragment shader");
+    // build program
+    let program = glium::Program::from_source(&display, vertex_shader_src.as_str(), fragment_shader_src.as_str(), None).unwrap();
 
-    in vec2 position;
-
-    uniform float x;
-
-    void main() {
-        vec2 pos = position;
-        pos.x += x*pos.y;
-        gl_Position = vec4(pos, 0.0, 1.0);
-    }
-    "#;
-
-    let fragment_shader_src = r#"
-    #version 140
-
-    out vec4 color;
-
-    void main() {
-        color = vec4(1.0, 0.0, 0.0, 1.0);
-    }
-    "#;
-
-    let program = glium::Program::from_source(&display, vertex_shader_src, fragment_shader_src, None).unwrap();
-
+    // test
     let mut t: f32 = 0.0;
 
     // start loop
@@ -64,12 +44,12 @@ fn main() {
                 },
                 event::WindowEvent::RedrawRequested => {
                     // calls when we want to draw each frame
-                    t += 0.001;
+                    t += 0.02;
                     let x_off = t.sin() * 0.5;
 
                     // set up frame
                     let mut frame = display.draw();
-                    frame.clear_color(0.0, 1.0, 1.0, 1.0);
+                    frame.clear_color(0.4706, 0.2196, 0.8745, 1.0);
 
                     // draw
                     frame.draw(&vertex_buffer, &index_buffer, &program, &uniform! { x: x_off },
