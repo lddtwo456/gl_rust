@@ -45,14 +45,13 @@ fn main() {
                 event::WindowEvent::RedrawRequested => {
                     // calls when we want to draw each frame
                     t += 0.02;
-                    let x_off = t.sin() * 0.5;
 
                     // set up frame
                     let mut frame = display.draw();
                     frame.clear_color(0.4706, 0.2196, 0.8745, 1.0);
 
                     // draw
-                    frame.draw(&vertex_buffer, &index_buffer, &program, &uniform! { x: x_off },
+                    frame.draw(&vertex_buffer, &index_buffer, &program, &uniform! { t: t },
                                &Default::default()).unwrap();
                     frame.finish().unwrap();
                 },
