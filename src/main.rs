@@ -51,7 +51,16 @@ fn main() {
                     frame.clear_color(0.4706, 0.2196, 0.8745, 1.0);
 
                     // draw
-                    frame.draw(&vertex_buffer, &index_buffer, &program, &uniform! { t: t },
+                    let uniforms = uniform! {
+                        matrix: [
+                            [ t.cos(), t.sin(), 0.0, 0.0],
+                            [-t.sin(), t.cos(), 0.0, 0.0],
+                            [0.0, 0.0, 1.0, 0.0],
+                            [0.0, 0.0, 0.0, 1.0f32],
+                        ]
+                    };
+
+                    frame.draw(&vertex_buffer, &index_buffer, &program, &uniforms,
                                &Default::default()).unwrap();
                     frame.finish().unwrap();
                 },
