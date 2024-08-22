@@ -5,8 +5,9 @@ use glium::{winit, winit::event, backend, Surface};
 #[derive(Copy, Clone)]
 struct Vertex {
     position: [f32; 2],
+    color: [f32; 3],
 }
-implement_vertex!(Vertex, position);
+implement_vertex!(Vertex, position, color);
 
 #[allow(deprecated)]
 fn main() {
@@ -15,11 +16,11 @@ fn main() {
     // window and display for drawing frames 
     let (window, display) = backend::glutin::SimpleWindowBuilder::new().build(&event_loop);
 
-    // triangle
-    let v1 = Vertex { position: [-0.5, -0.5] };
-    let v2 = Vertex { position: [ 0.0,  0.5] };
-    let v3 = Vertex { position: [ 0.5, -0.25] };
-    let shape = vec![v1, v2, v3];
+    let shape = vec![
+        Vertex { position: [-0.5, -0.5], color: [1.0, 0.0, 0.0] },
+        Vertex { position: [ 0.0,  0.5], color: [0.0, 1.0, 0.0] },
+        Vertex { position: [ 0.5, -0.25], color: [0.0, 0.0, 1.0] }
+    ];
 
     // make buffers
     let vertex_buffer = glium::VertexBuffer::new(&display, &shape).unwrap();
